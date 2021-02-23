@@ -1,4 +1,5 @@
 # WebScraping
-First WebScraping
+WebScraping PYTHON
 
-My first WebScraping using the libs BS4 and Requests
+WebScraping para a coleta e tratamento de dados obtidos através do CNPJ.
+
