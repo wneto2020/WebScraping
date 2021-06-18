@@ -10,11 +10,11 @@ def parser(url: str):
 def treatment(list_info: list):
     content = []
     if len(list_info) == 1:
-        for data2 in list_info[0].find_all('b'):
-            if data2.next_element == "00814115000110" or data2.next_element == " ":
+        for data in list_info[0].find_all('b'):
+            if data.next_element == "00814115000110" or data.next_element == " ":
                 continue
             else:
-                content.append(data2.next_element)
+                content.append(data.next_element)
         return content
 
 
