@@ -1,31 +1,31 @@
 import requests
 from bs4 import BeautifulSoup
 
-lista_final = []
+def parser(url: str):
+    req = requests.get(url)
+    soup = BeautifulSoup(req.content, 'html.parser').find_all('div', class_="col c9-2")
+    return soup
 
-lista_final2 = []
+def treatment(list_info: list):
+    list_final = []
+    list_final2 = []
+    
+    if len(list_info) == 1:
+        for data in list_info[0].find_all('p'):
+            list_final.append(data.next_element)
 
-url = "https://cnpj.biz/00814115000110"
+        for data2 in list_info[0].find_all('b'):
+            if data2.next_element == "00814115000110" or data2.next_element == " ":
+                continue
+            else:
+                list_final2.append(data2.next_element)
+        return list_final, list_final2
 
-req = requests.get(url)
+if __name__ == '__main__':
+    cnpj = "00814115000110"
+    list_final, list_final2 = treatment(parser(f"https://cnpj.biz/{cnpj}"))
 
-soup = BeautifulSoup(req.content, 'html.parser')
-
-lista_info = soup.find_all('div', class_="col c9-2")
-print(len(lista_info))
-if len(lista_info) == 1:
-    lista_infop = lista_info[0]
-    lista = lista_infop.find_all('p')
-    lista2 = lista_infop.find_all('b')
-
-    for lista_dados in lista:
-        lista_final.append(lista_dados.next_element)
-
-    for lista_dados2 in lista2:
-        lista_final2.append(lista_dados2.next_element)
-
-
-for x in zip(lista_final,lista_final2):
-    print(x)
+    for i in range(len(list_final2)):
+        print(list_final[i], list_final2[i])
 
 
