@@ -1,35 +1,29 @@
 import requests
 from bs4 import BeautifulSoup
 
-
-def scraping(cnpj, caminho_arquivo):
-    lista_title = []
-
-    lista_info = []
-
-    url = f"https://cnpj.biz/{cnpj}"
-
+def parser(url: str):
     req = requests.get(url)
+    soup = BeautifulSoup(req.content, 'html.parser').find_all('div', class_="col c9-2")
+    return soup
 
-    soup = BeautifulSoup(req.content, 'html.parser')
 
-    lista_div = soup.find_all('div', class_="col c9-2")
+def treatment(list_info: list):
+    content = []
+    if len(list_info) == 1:
+        for data2 in list_info[0].find_all('b'):
+            if data2.next_element == "00814115000110" or data2.next_element == " ":
+                continue
+            else:
+                content.append(data2.next_element)
+        return content
 
-    if len(lista_div) == 1:
 
-        lista_info_med = lista_div[0]
+def write(path, content):
+    with open(path, 'a') as file:
+        file.write(",".join(str(element) for element in content) + "\n")
 
-        lista_p = lista_info_med.find_all('p')
 
-        lista_b = lista_info_med.find_all('b')
-
-        for dados_p in lista_p:
-            lista_title.append(dados_p.next_element)
-
-        for dados_b in lista_b:
-            lista_info.append(dados_b.next_element)
-
-        with open(caminho_arquivo, 'a') as file:
-            file.write(",".join(str(element) for element in lista_info) + "\n")
-
-scraping("00814115000110", "infos_corp.xls")
+if __name__ == '__main__':
+    cnpj = "00814115000110"
+    content = treatment(parser(f"https://cnpj.biz/{cnpj}"))
+    write("info.xlsx", content)
